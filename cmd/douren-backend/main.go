@@ -8,6 +8,6 @@ import (
 func main() {
 	mux := http.NewServeMux()
 	print("Server Running")
-	mux.Handle("/artist", handler.GetAllArtist())
+	mux.Handle("/artist", handler.HandleArtist())
 	http.ListenAndServe(":3000",mux)
 }
