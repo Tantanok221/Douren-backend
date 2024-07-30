@@ -23,8 +23,3 @@ type PrimitiveArtist struct {
 	Introduction   string `bun:"Introduction"`
 	Tags           string `bun:"Tags"`
 }
-
-
-func SelectQuery(db *bun.DB) *bun.SelectQuery {
-	return db.NewSelect().Model(&PrimitiveArtist{})
-}

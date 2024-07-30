@@ -4,19 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/tantanok221/douren-backend/internal/helper"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
-
-	"github.com/tantanok221/douren-backend/internal/env"
 )
 
 var (
-	PASSWORD string = env.GetEnv("PASSWORD")
-	USER     string = env.GetEnv("USER")
-	HOST     string = env.GetEnv("HOST")
-	DBNAME   string = env.GetEnv("DBNAME")
-	PORT     string = env.GetEnv("PORT")
+	PASSWORD string = helper.GetEnv("PASSWORD")
+	USER     string = helper.GetEnv("USER")
+	HOST     string = helper.GetEnv("HOST")
+	DBNAME   string = helper.GetEnv("DBNAME")
+	PORT     string = helper.GetEnv("PORT")
 )
 
 func Init() *bun.DB {
@@ -26,5 +25,3 @@ func Init() *bun.DB {
 	db := bun.NewDB(sqldb, pgdialect.New())
 	return db
 }
-
-

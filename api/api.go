@@ -9,11 +9,19 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func GetAllPrimitiveArtist(db *bun.DB) []models.PrimitiveArtist {
+
+type GetAllPrimitiveArtistOptions struct{
+	DB *bun.DB
+	Limit int
+	Page int
+}
+
+
+func(opts GetAllPrimitiveArtistOptions) GetAllPrimitiveArtist( ) []models.PrimitiveArtist {
 	var result []models.PrimitiveArtist
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	err := db.NewSelect().Model(&result).Limit(20).Scan(ctx)
+	err := opts.DB.NewSelect().Model(&result).Limit(opts.Limit).Scan(ctx)
 	if err != nil {
 		log.Fatal("Database Connection Fail", err)
 	}
