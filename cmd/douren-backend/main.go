@@ -1,19 +1,24 @@
 package main
 
 import (
+	"flag"
+	"log"
 	"net/http"
+	"os"
 
-	"github.com/tantanok221/douren-backend/db"
-	"github.com/tantanok221/douren-backend/handler"
+	"github.com/tantanok221/douren-backend/internal/routes"
 )
 
 func main() {
-	mux := http.NewServeMux()
+
+	errorLog := log.New(os.Stderr, "ERROR:\t", log.Ldate|log.Ltime|log.Lshortfile,)
+	addr := flag.String("addr", ":3000", "HTTP Network address")
 	print("Server Running")
-	handler := &handler.ArtistHandler{
-		DB:  db.Init(),
+
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  routes.Route(),
 	}
-	mux.Handle("GET /artist", handler.GetAllArtist())
-	mux.Handle("GET /artist/{id}", handler.GetArtistById())
-	http.ListenAndServe(":3000",mux)
+	srv.ListenAndServe()
 }

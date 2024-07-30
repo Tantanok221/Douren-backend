@@ -5,18 +5,17 @@ import (
 	"log"
 	"time"
 
-	"github.com/tantanok221/douren-backend/internal/jsonlib"
 	"github.com/tantanok221/douren-backend/models"
 	"github.com/uptrace/bun"
 )
 
-func GetAllPrimitiveArtist(db *bun.DB) []byte {
-	var result models.Result
+func GetAllPrimitiveArtist(db *bun.DB) []models.PrimitiveArtist {
+	var result []models.PrimitiveArtist
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	err := models.SelectQuery(db).ColumnExpr("*").Limit(20).Scan(ctx, &result)
+	err := db.NewSelect().Model(&result).Limit(20).Scan(ctx)
 	if err != nil {
 		log.Fatal("Database Connection Fail", err)
 	}
-	return jsonlib.GetJson(result)
+	return result
 }
