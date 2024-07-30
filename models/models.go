@@ -6,7 +6,7 @@ import (
 
 type PrimitiveArtist struct {
 	bun.BaseModel  `bun:"table:Author_Main"`
-	uuid           int8   `bun:"uuid,pk,autoincrement"`
+	UUID           int8   `bun:"uuid,pk,autoincrement"`
 	Author         string `bun:"Author,notnull"`
 	Twitter_link   string `bun:"Twitter_link"`
 	Facebook_link  string `bun:"Facebook_link"`
