@@ -39,7 +39,7 @@ func parseAllArtistParams(r *http.Request) (limit, page int, err error) {
 		return 0, 0, errors.New("limit parameter is not a number")
 	}
 
-	page, err = helper.HandleParam(r.URL.Query().Get("page"), 0)
+	page, err = helper.HandleParam(r.URL.Query().Get("page"), 1)
 	if err != nil {
 		return 0, 0, errors.New("page parameter is not a number")
 	}
@@ -52,11 +52,11 @@ func (h ArtistHandler) GetArtistById() http.HandlerFunc {
 		id, err := strconv.Atoi(r.PathValue("id"))
 
 		if string(id) == "" || err != nil {
-			http.Error(w,"Missing Required Parameter", http.StatusUnprocessableEntity)
+			http.Error(w, "Missing Required Parameter", http.StatusUnprocessableEntity)
 			return
 		}
 
 		data := api.GetPrimitiveArtistById(h.DB, id)
-		helper.WriteJSON(w,data)
+		helper.WriteJSON(w, data)
 	}
 }

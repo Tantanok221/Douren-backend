@@ -12,7 +12,7 @@ import (
 
 var (
 	PASSWORD string = helper.GetEnv("PASSWORD")
-	USER     string = helper.GetEnv("USER")
+	USER     string = helper.GetEnv("USERS")
 	HOST     string = helper.GetEnv("HOST")
 	DBNAME   string = helper.GetEnv("DBNAME")
 	PORT     string = helper.GetEnv("PORT")
