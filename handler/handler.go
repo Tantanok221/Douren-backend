@@ -14,6 +14,11 @@ type ArtistHandler struct {
 	DB *bun.DB
 }
 
+type APIWrapper struct {
+	Data       []interface{} `json:"data"`
+	Pagination []interface{} `json:"pagination"`
+}
+
 func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		limit, page, err := parseAllArtistParams(r)
@@ -21,15 +26,21 @@ func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
 		}
-
-		options := &api.GetAllPrimitiveArtistOptions{
+		options := &api.DBOptions{
 			DB:    h.DB,
 			Limit: limit,
 			Page:  page,
 		}
-		data := options.GetAllPrimitiveArtist()
+		dataResponse := options.GetAllPrimitiveArtist()
+		paginationResponse := options.GetPagination()
+		data := make([]interface{}, len(dataResponse))
+		pagination := make([]interface{}, len(paginationResponse))
+		jsonResponse := APIWrapper{
+			Data:       data,
+			Pagination: pagination,
+		}
 
-		helper.WriteJSON(w, data)
+		helper.WriteJSON(w, jsonResponse)
 	}
 }
 

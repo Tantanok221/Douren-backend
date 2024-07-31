@@ -9,13 +9,17 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type GetAllPrimitiveArtistOptions struct {
+type DBOptions struct {
 	DB    *bun.DB
 	Limit int
 	Page  int
 }
 
-func (opts GetAllPrimitiveArtistOptions) GetAllPrimitiveArtist() []models.PrimitiveArtist {
+func (opts DBOptions) GetPagination() {
+
+}
+
+func (opts DBOptions) GetAllPrimitiveArtist() []models.PrimitiveArtist {
 	var result []models.PrimitiveArtist
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
