@@ -10,6 +10,8 @@ require (
 )
 
 require (
+	github.com/Cleverse/go-utilities/errors v0.0.0-20231113142714-2364608744a9 // indirect
+	github.com/Cleverse/go-utilities/nullable v0.0.0-20240724230759-d8bb035f0513 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect

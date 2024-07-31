@@ -23,3 +23,11 @@ type PrimitiveArtist struct {
 	Introduction   string `bun:"Introduction"`
 	Tags           string `bun:"Tags"`
 }
+
+type Pagination struct {
+	TotalPage    int `json:"total_page"`
+	PreviousPage int `json:"prev_page"`
+	NextPage     int `json:"next_page"`
+	CurrentPage  int `json:"current_page"`
+	TotalRecords int `json:"total_records"`
+}

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"github.com/Cleverse/go-utilities/nullable"
 	"log"
 	"time"
 
@@ -15,7 +16,24 @@ type DBOptions struct {
 	Page  int
 }
 
-func (opts DBOptions) GetPagination() {
+func (opts DBOptions) GetPagination(model interface{}) {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	count, err := opts.DB.NewSelect().Model(model).Count(ctx)
+	if err != nil {
+		log.Fatal("Inside GetPagination: ", err, "\n")
+	}
+	totalPage := count / opts.Page
+	nextPage := nullable.From(opts.Page)
+	if totalPage == opts.Page {
+		nextPage.SetNull()
+	}
+	var pagination = models.Pagination{
+		TotalRecords: count,
+		TotalPage:    count / opts.Page,
+		CurrentPage:  opts.Page,
+		NextPage:     nextPage,
+	}
 
 }
 
