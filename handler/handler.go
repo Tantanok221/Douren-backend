@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"github.com/tantanok221/douren-backend/models"
 	"net/http"
 	"strconv"
 
@@ -14,9 +15,9 @@ type ArtistHandler struct {
 	DB *bun.DB
 }
 
-type APIWrapper struct {
-	Data       []interface{} `json:"data"`
-	Pagination []interface{} `json:"pagination"`
+type APIWrapper[T any] struct {
+	Data       T                 `json:"data"`
+	Pagination models.Pagination `json:"pagination"`
 }
 
 func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
@@ -32,12 +33,10 @@ func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
 			Page:  page,
 		}
 		dataResponse := options.GetAllPrimitiveArtist()
-		paginationResponse := options.GetPagination()
-		data := make([]interface{}, len(dataResponse))
-		pagination := make([]interface{}, len(paginationResponse))
-		jsonResponse := APIWrapper{
-			Data:       data,
-			Pagination: pagination,
+		paginationResponse := api.GetPagination[models.PrimitiveArtist](options)
+		jsonResponse := APIWrapper[[]models.PrimitiveArtist]{
+			Data:       dataResponse,
+			Pagination: paginationResponse,
 		}
 
 		helper.WriteJSON(w, jsonResponse)

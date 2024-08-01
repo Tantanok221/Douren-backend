@@ -16,25 +16,33 @@ type DBOptions struct {
 	Page  int
 }
 
-func (opts DBOptions) GetPagination(model interface{}) {
+func GetPagination[T any](opts *DBOptions) models.Pagination {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	count, err := opts.DB.NewSelect().Model(model).Count(ctx)
+	var model T
+	count, err := opts.DB.NewSelect().Model(&model).Count(ctx)
 	if err != nil {
 		log.Fatal("Inside GetPagination: ", err, "\n")
 	}
-	totalPage := count / opts.Page
-	nextPage := nullable.From(opts.Page)
-	if totalPage == opts.Page {
+	totalPage := count / opts.Limit
+	nextPage := nullable.From(opts.Page + 1)
+	val, _ := nextPage.Get()
+	if val > totalPage {
 		nextPage.SetNull()
+	}
+	prevPage := nullable.From(opts.Page - 1)
+	val, _ = prevPage.Get()
+	if val < 1 {
+		prevPage.SetNull()
 	}
 	var pagination = models.Pagination{
 		TotalRecords: count,
-		TotalPage:    count / opts.Page,
+		TotalPage:    totalPage,
 		CurrentPage:  opts.Page,
 		NextPage:     nextPage,
+		PreviousPage: prevPage,
 	}
-
+	return pagination
 }
 
 func (opts DBOptions) GetAllPrimitiveArtist() []models.PrimitiveArtist {
