@@ -20,9 +20,9 @@ type APIWrapper[T any] struct {
 	Pagination models.Pagination `json:"pagination"`
 }
 
-func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
+func GetArtist[T any](h *ArtistHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		limit, page, err := parseAllArtistParams(r)
+		limit, page, err := parsePaginationParams(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 			return
@@ -32,9 +32,9 @@ func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
 			Limit: limit,
 			Page:  page,
 		}
-		dataResponse := options.GetAllPrimitiveArtist()
-		paginationResponse := api.GetPagination[models.PrimitiveArtist](options)
-		jsonResponse := APIWrapper[[]models.PrimitiveArtist]{
+		dataResponse := api.FetchWithOptions[T](options)
+		paginationResponse := api.GetPagination[T](options)
+		jsonResponse := APIWrapper[[]T]{
 			Data:       dataResponse,
 			Pagination: paginationResponse,
 		}
@@ -43,7 +43,7 @@ func (h ArtistHandler) GetAllArtist() http.HandlerFunc {
 	}
 }
 
-func parseAllArtistParams(r *http.Request) (limit, page int, err error) {
+func parsePaginationParams(r *http.Request) (limit, page int, err error) {
 	limit, err = helper.HandleParam(r.URL.Query().Get("limit"), 20)
 	if err != nil {
 		return 0, 0, errors.New("limit parameter is not a number")

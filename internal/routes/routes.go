@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/tantanok221/douren-backend/models"
 	"net/http"
 
 	"github.com/tantanok221/douren-backend/db"
@@ -10,10 +11,11 @@ import (
 func Route() *http.ServeMux {
 	mux := http.NewServeMux()
 	db := db.Init()
-	handler := &handler.ArtistHandler{
+	Handler := &handler.ArtistHandler{
 		DB: db,
 	}
-	mux.Handle("GET /artist", handler.GetAllArtist())
-	mux.Handle("GET /artist/{id}", handler.GetArtistById())
+	mux.Handle("GET /artist", handler.GetArtist[models.PrimitiveArtist](Handler))
+	mux.Handle("GET /event/{event}/artist", handler.HandleEventArtist(Handler))
+	mux.Handle("GET /artist/{id}", Handler.GetArtistById())
 	return mux
 }

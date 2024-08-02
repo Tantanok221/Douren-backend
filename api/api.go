@@ -45,8 +45,23 @@ func GetPagination[T any](opts *DBOptions) models.Pagination {
 	return pagination
 }
 
-func (opts DBOptions) GetAllPrimitiveArtist() []models.PrimitiveArtist {
-	var result []models.PrimitiveArtist
+func EventFetch(opts *DBOptions, eventId int) []models.EventArtist {
+	var result []models.EventArtist
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	query := opts.DB.NewSelect().Model(&result).Where("Event_id = ?", eventId).Limit(opts.Limit)
+	if opts.Page > 1 {
+		query = query.Offset((opts.Page - 1) * 10)
+	}
+	err := query.Scan(ctx)
+	if err != nil {
+		log.Fatal("Database Connection Fail", err)
+	}
+	return result
+}
+
+func FetchWithOptions[T any](opts *DBOptions) []T {
+	var result []T
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	query := opts.DB.NewSelect().Model(&result).Limit(opts.Limit)
